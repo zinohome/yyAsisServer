@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 '''
 @File    :   main.py
-@Author  :   一力辉 
+@Author  :   zinohome 
 '''
 
 from aiengine.utils import log, config

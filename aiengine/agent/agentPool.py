@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 '''
 @File    :   AgentPool.py
-@Author  :   一力辉 
+@Author  :   zinohome 
 '''
 
 from threading import RLock

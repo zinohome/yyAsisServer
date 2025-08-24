@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 '''
 @File    :   header.py
-@Author  :   一力辉
+@Author  :   zinohome
 '''
 
 from typing import Annotated

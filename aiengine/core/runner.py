@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 '''
 @File    :   runner.py
-@Author  :   一力辉
+@Author  :   zinohome
 '''
 
 from typing import List, Dict

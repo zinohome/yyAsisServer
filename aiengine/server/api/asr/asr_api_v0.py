@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 '''
 @File    :   asrApi.py
-@Author  :   一力辉 
+@Author  :   zinohome 
 '''
 
 import json

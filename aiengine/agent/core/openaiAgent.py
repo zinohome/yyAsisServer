@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 '''
 @File    :   openaiAgnet.py
-@Author  :   一力辉 
+@Author  :   zinohome 
 '''
 
 from ..builder import AGENTS

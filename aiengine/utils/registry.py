@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 '''
 @File    :   registry.py
-@Author  :   一力辉 
+@Author  :   zinohome 
 '''
 
 __all__ = ['Registry']

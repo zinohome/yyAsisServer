@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 '''
 @File    :   openai.py
-@Author  :   一力辉
+@Author  :   zinohome
 '''
 
 from openai import AsyncOpenAI
