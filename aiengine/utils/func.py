@@ -22,7 +22,7 @@ def checkResponse(response: Response, module: str, note: str = "") -> Dict:
     """
     if response.status_code == 200:
         return response.json()
-    logger.error(f"[{module}] {note}, status code: {response.status_code}, data: {response.text}", exc_info=True)
+    log.error(f"[{module}] {note}, status code: {response.status_code}, data: {response.text}", exc_info=True)
     # 优先提取message错误信息
     try:
         message = response.json()['message']

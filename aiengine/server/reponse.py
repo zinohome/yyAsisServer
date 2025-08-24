@@ -31,7 +31,7 @@ class Response(object):
     def _message_log_summary(self, message: str, isError: bool):
         self.message = message
         if isError:
-            logger.error(message, exc_info=True)
+            log.error(message, exc_info=True)
         else:
             log.debug(message)
 

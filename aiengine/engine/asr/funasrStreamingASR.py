@@ -71,9 +71,9 @@ class FunasrStreamingAsr(StreamBaseEngine):
         except WebSocketDisconnect:
             log.debug("adhWebsocket closed, task_send exit")
         except websockets.ConnectionClosed:
-            logger.debug("funasrWebsocket closed, task_send exit")
+            log.debug("funasrWebsocket closed, task_send exit")
         except Exception as e:
-            logger.error(f"FunasrStreamingAsr task_send error: {e}")
+            log.error(f"FunasrStreamingAsr task_send error: {e}")
             await WebSocketHandler.send_message(adhWebsocket, WS_SEND_ACTION_TYPE.ERROR, str(e))
 
     async def _task_recv(self, adhWebsocket: WebSocket, funasrWebsocket: websockets.ClientConnection, mode: str):

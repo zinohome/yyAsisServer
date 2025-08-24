@@ -12,7 +12,7 @@ from logging.handlers import RotatingFileHandler
 from .env import LOG_PATH
 from .configParser import config
 
-__all__ = ["log.py"]
+__all__ = ["log"]
 
 LOGGER_FOLDER = os.path.join(LOG_PATH, datetime.now().strftime("%Y%m%d%H%M%S"))
 LOGGER_MAX_BYTES = 1024 * 1024 * 100
@@ -27,8 +27,8 @@ def getLogger(loggerName: str):
     checkLoggerPath()
     loggerFile = os.path.join(LOGGER_FOLDER, loggerName + "_log.txt")
 
-    logger = logging.getLogger(loggerName)
-    logger.setLevel(logging.DEBUG)
+    log = logging.getLogger(loggerName)
+    log.setLevel(logging.DEBUG)
 
     # 日志记录
     fileHandler = RotatingFileHandler(
@@ -64,9 +64,9 @@ def getLogger(loggerName: str):
         fileHandler.setLevel(logging.DEBUG)
         streamHander.setLevel(logging.DEBUG)
 
-    logger.addHandler(fileHandler)
-    logger.addHandler(streamHander)
+    log.addHandler(fileHandler)
+    log.addHandler(streamHander)
 
-    return logger
+    return log
 
 log = getLogger("system")

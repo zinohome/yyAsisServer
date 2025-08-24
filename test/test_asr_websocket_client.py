@@ -150,9 +150,9 @@ class AudioRecorder:
                 frames_per_buffer=self.chunk_size
             )
             self.is_recording = True
-            logger.info(f"开始录音: {self.sample_rate}Hz, {self.channels}通道, 块大小: {self.chunk_size}")
+            log.info(f"开始录音: {self.sample_rate}Hz, {self.channels}通道, 块大小: {self.chunk_size}")
         except Exception as e:
-            logger.error(f"启动录音失败: {e}")
+            log.error(f"启动录音失败: {e}")
             raise
     
     def read_audio_chunk(self):
@@ -177,7 +177,7 @@ class AudioRecorder:
             
             return None
         except Exception as e:
-            logger.error(f"读取音频数据失败: {e}")
+            log.error(f"读取音频数据失败: {e}")
             return None
     
     def get_remaining_audio(self):
@@ -191,7 +191,7 @@ class AudioRecorder:
                 silence_needed = self.target_chunk_size - len(remaining_data)
                 silence_data = b'\x00' * silence_needed  # 16位PCM静音数据
                 remaining_data += silence_data
-                logger.info(f"音频数据不足，补足静音: {silence_needed} 字节")
+                log.info(f"音频数据不足，补足静音: {silence_needed} 字节")
             
             return remaining_data
         return None
@@ -203,7 +203,7 @@ class AudioRecorder:
             self.stream.stop_stream()
             self.stream.close()
             self.stream = None
-        logger.info("录音已停止")
+        log.info("录音已停止")
     
     def cleanup(self):
         """清理资源"""
@@ -229,10 +229,10 @@ class FileAudioSource:
         try:
             self.wave_file = wave.open(self.file_path, 'rb')
             self.is_reading = True
-            logger.info(f"开始读取音频文件: {self.file_path}")
-            logger.info(f"文件参数: {self.wave_file.getframerate()}Hz, {self.wave_file.getnchannels()}通道")
+            log.info(f"开始读取音频文件: {self.file_path}")
+            log.info(f"文件参数: {self.wave_file.getframerate()}Hz, {self.wave_file.getnchannels()}通道")
         except Exception as e:
-            logger.error(f"打开音频文件失败: {e}")
+            log.error(f"打开音频文件失败: {e}")
             raise
     
     def read_audio_chunk(self):
@@ -257,7 +257,7 @@ class FileAudioSource:
             
             return None
         except Exception as e:
-            logger.error(f"读取音频文件数据失败: {e}")
+            log.error(f"读取音频文件数据失败: {e}")
             return None
     
     def get_remaining_audio(self):
@@ -271,7 +271,7 @@ class FileAudioSource:
                 silence_needed = self.target_chunk_size - len(remaining_data)
                 silence_data = b'\x00' * silence_needed  # 16位PCM静音数据
                 remaining_data += silence_data
-                logger.info(f"音频数据不足，补足静音: {silence_needed} 字节")
+                log.info(f"音频数据不足，补足静音: {silence_needed} 字节")
             
             return remaining_data
         return None
@@ -282,7 +282,7 @@ class FileAudioSource:
         if self.wave_file:
             self.wave_file.close()
             self.wave_file = None
-        logger.info("文件读取已停止")
+        log.info("文件读取已停止")
     
     def cleanup(self):
         """清理资源"""
@@ -303,14 +303,14 @@ class ASRWebSocketClient:
     async def connect(self):
         """连接到WebSocket服务器"""
         try:
-            logger.info(f"正在连接到服务器: {self.server_url}")
+            log.info(f"正在连接到服务器: {self.server_url}")
             self.websocket = await websockets.connect(self.server_url)
             # 保存当前事件循环的引用
             self._main_loop = asyncio.get_running_loop()
-            logger.info("WebSocket连接成功")
+            log.info("WebSocket连接成功")
             return True
         except Exception as e:
-            logger.error(f"连接失败: {e}")
+            log.error(f"连接失败: {e}")
             return False
     
     async def disconnect(self):
@@ -318,37 +318,37 @@ class ASRWebSocketClient:
         if self.websocket:
             await self.websocket.close()
             self.websocket = None
-            logger.info("WebSocket连接已断开")
+            log.info("WebSocket连接已断开")
     
     async def send_message(self, action: bytes, payload: bytes = b""):
         """发送二进制消息"""
         if not self.websocket:
-            logger.error("WebSocket未连接")
+            log.error("WebSocket未连接")
             return False
         
         try:
             message = create_binary_message(action, payload)
             await self.websocket.send(message)
-            logger.debug(f"发送消息: {action.decode('utf-8').strip()}")
+            log.debug(f"发送消息: {action.decode('utf-8').strip()}")
             return True
         except Exception as e:
-            logger.error(f"发送消息失败: {e}")
+            log.error(f"发送消息失败: {e}")
             return False
     
     async def send_audio_chunk(self, audio_data, is_final=False):
         """发送音频数据"""
         if not self.websocket:
-            logger.error("WebSocket未连接")
+            log.error("WebSocket未连接")
             return False
         
         try:
             action = ActionType.FINAL_CHUNK if is_final else ActionType.AUDIO_CHUNK
             message = create_binary_message(action, audio_data)
             await self.websocket.send(message)
-            logger.debug(f"发送音频块: {len(audio_data)} 字节 ({'最终块' if is_final else '普通块'})")
+            log.debug(f"发送音频块: {len(audio_data)} 字节 ({'最终块' if is_final else '普通块'})")
             return True
         except Exception as e:
-            logger.error(f"发送音频数据失败: {e}")
+            log.error(f"发送音频数据失败: {e}")
             return False
     
     async def receive_messages(self):
@@ -363,42 +363,42 @@ class ASRWebSocketClient:
                         action, payload = parse_binary_message(message)
                         await self.handle_server_message(action, payload)
                     else:
-                        logger.error(f"收到非二进制消息: {message}")
+                        log.error(f"收到非二进制消息: {message}")
                 except Exception as e:
-                    logger.error(f"解析消息失败: {e}")
+                    log.error(f"解析消息失败: {e}")
         except websockets.exceptions.ConnectionClosed:
-            logger.info("服务器连接已关闭")
+            log.info("服务器连接已关闭")
         except Exception as e:
-            logger.error(f"接收消息时发生错误: {e}")
+            log.error(f"接收消息时发生错误: {e}")
     
     async def handle_server_message(self, action: bytes, payload: bytes):
         """处理服务器消息"""
         message_text = decode_text_payload(payload)
         
         if action == ActionType.CONNECTION_ACK:
-            logger.info(f"服务器确认连接: {message_text}")
+            log.info(f"服务器确认连接: {message_text}")
         elif action == ActionType.ENGINE_READY:
-            logger.info(f"ASR引擎就绪: {message_text}")
+            log.info(f"ASR引擎就绪: {message_text}")
         elif action == ActionType.STREAM_STARTED:
-            logger.info(f"音频流已开始: {message_text}")
+            log.info(f"音频流已开始: {message_text}")
         elif action == ActionType.PARTIAL_TRANSCRIPT:
-            logger.info(f"部分识别结果: {message_text}")
+            log.info(f"部分识别结果: {message_text}")
         elif action == ActionType.FINAL_TRANSCRIPT:
-            logger.info(f"最终识别结果: {message_text}" + str(time.time()))
+            log.info(f"最终识别结果: {message_text}" + str(time.time()))
             self.final_transcript = message_text  # 保存最终识别结果
         elif action == ActionType.STREAM_ENDED:
-            logger.info(f"音频流已结束: {message_text}")
+            log.info(f"音频流已结束: {message_text}")
         elif action == ActionType.PONG:
-            logger.debug("收到PONG响应")
+            log.debug("收到PONG响应")
         elif action == ActionType.ERROR:
-            logger.error(f"服务器错误: {message_text}")
+            log.error(f"服务器错误: {message_text}")
         else:
             action_name = action.decode('utf-8').strip()
-            logger.warning(f"未知消息类型: {action_name}")
+            log.warning(f"未知消息类型: {action_name}")
     
     def audio_streaming_thread(self):
         """音频流发送线程"""
-        logger.info("音频流线程启动")
+        log.info("音频流线程启动")
         
         # 获取主事件循环
         loop = self._main_loop
@@ -406,7 +406,7 @@ class ASRWebSocketClient:
         while self.is_streaming and self.audio_source:
             audio_data = self.audio_source.read_audio_chunk()
             if audio_data is None:
-                logger.info("音频数据读取完毕")
+                log.info("音频数据读取完毕")
                 break
             
             # 在主事件循环中发送音频数据
@@ -418,12 +418,12 @@ class ASRWebSocketClient:
                 try:
                     future.result(timeout=1.0)  # 等待发送完成，设置超时
                 except Exception as e:
-                    logger.error(f"发送音频数据失败: {e}")
+                    log.error(f"发送音频数据失败: {e}")
 
             # 控制发送频率 - 每个块对应240ms音频
             time.sleep(0.24)  # 240ms间隔，与音频块时长匹配
         
-        logger.info("音频流线程结束")
+        log.info("音频流线程结束")
     
     async def start_audio_stream(self, audio_source):
         """开始音频流"""
@@ -447,7 +447,7 @@ class ASRWebSocketClient:
         self.audio_thread = threading.Thread(target=self.audio_streaming_thread)
         self.audio_thread.start()
         
-        logger.info("音频流已启动")
+        log.info("音频流已启动")
         return True
     
     async def stop_audio_stream(self):
@@ -463,7 +463,7 @@ class ASRWebSocketClient:
         if self.audio_source and hasattr(self.audio_source, 'get_remaining_audio'):
             remaining_audio = self.audio_source.get_remaining_audio()
             if remaining_audio and len(remaining_audio) > 0:
-                logger.info(f"发送剩余音频数据: {len(remaining_audio)} 字节")
+                log.info(f"发送剩余音频数据: {len(remaining_audio)} 字节")
                 await self.send_audio_chunk(remaining_audio, is_final=True)
         
         # 停止音频源
@@ -476,7 +476,7 @@ class ASRWebSocketClient:
         # 发送结束流消息
         await self.send_message(ActionType.END_STREAM)
         
-        logger.info("音频流已停止")
+        log.info("音频流已停止")
     
     async def ping(self, payload: str = "test_ping"):
         """发送PING消息"""
@@ -502,7 +502,7 @@ async def test_microphone_streaming(server_url, duration=10):
         await client.start_audio_stream(recorder)
         
         # 录制指定时长
-        logger.info(f"开始录制 {duration} 秒...")
+        log.info(f"开始录制 {duration} 秒...")
         await asyncio.sleep(duration)
         
         # 停止音频流
@@ -515,7 +515,7 @@ async def test_microphone_streaming(server_url, duration=10):
         receive_task.cancel()
         
     except Exception as e:
-        logger.error(f"测试过程中发生错误: {e}")
+        log.error(f"测试过程中发生错误: {e}")
     finally:
         recorder.cleanup()
         await client.disconnect()
@@ -523,7 +523,7 @@ async def test_microphone_streaming(server_url, duration=10):
 async def test_file_streaming(server_url, audio_file):
     """测试音频文件流"""
     if not os.path.exists(audio_file):
-        logger.error(f"音频文件不存在: {audio_file}")
+        log.error(f"音频文件不存在: {audio_file}")
         return
     
     client = ASRWebSocketClient(server_url)
@@ -557,7 +557,7 @@ async def test_file_streaming(server_url, audio_file):
         receive_task.cancel()
         
     except Exception as e:
-        logger.error(f"测试过程中发生错误: {e}")
+        log.error(f"测试过程中发生错误: {e}")
     finally:
         file_source.cleanup()
         await client.disconnect()
@@ -650,7 +650,7 @@ async def test_interactive_streaming(server_url):
                 print("\n输入结束，退出程序...")
                 break
             except Exception as e:
-                logger.error(f"处理用户输入时发生错误: {e}")
+                log.error(f"处理用户输入时发生错误: {e}")
                 continue
         
         # 确保停止音频流
@@ -667,7 +667,7 @@ async def test_interactive_streaming(server_url):
                 pass
         
     except Exception as e:
-        logger.error(f"测试过程中发生错误: {e}")
+        log.error(f"测试过程中发生错误: {e}")
     finally:
         recorder.cleanup()
         await client.disconnect()
@@ -691,16 +691,16 @@ def main():
         logging.getLogger().setLevel(logging.DEBUG)
     
     if args.mode == "mic":
-        logger.info("启动麦克风测试模式")
+        log.info("启动麦克风测试模式")
         asyncio.run(test_microphone_streaming(args.server, args.duration))
     elif args.mode == "file":
         if not args.file:
-            logger.error("文件模式需要指定 --file 参数")
+            log.error("文件模式需要指定 --file 参数")
             return
-        logger.info(f"启动文件测试模式: {args.file}")
+        log.info(f"启动文件测试模式: {args.file}")
         asyncio.run(test_file_streaming(args.server, args.file))
     elif args.mode == "interactive":
-        logger.info("启动交互式测试模式")
+        log.info("启动交互式测试模式")
         asyncio.run(test_interactive_streaming(args.server))
 
 if __name__ == "__main__":

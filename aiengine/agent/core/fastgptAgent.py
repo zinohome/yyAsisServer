@@ -63,7 +63,7 @@ class FastgptApiAgent(BaseAgent):
                         chunkData = pattern.search(chunkStr)
                         if not chunkStr.endswith('}') or not chunkData: 
                             if 'DONE' in chunkStr: break
-                            logger.warning(f"[AGENT] Engine return truncated data: {chunkStr}")
+                            log.warning(f"[AGENT] Engine return truncated data: {chunkStr}")
                             continue
                         chunkData = chunkData.group(1)
 

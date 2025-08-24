@@ -182,7 +182,7 @@ class TencentApiTts(BaseTTSEngine):
         SECRECT_KEY = paramters["secret_key"]
         tencentCloudApiKey = TencentCloudApiKey(secret_id=SECRECT_ID, secret_key=SECRECT_KEY)
         headers, payload = self._buildRequest(input, tencentCloudApiKey, voice, volume, speed) 
-        logger.debug(f"[TTS] Engine input: {input.data}")
+        log.debug(f"[TTS] Engine input: {input.data}")
         response = await httpxAsyncClient.post(self._url, headers=headers, data=payload)
         if response.status_code != 200:
             raise RuntimeError(f"Builtin tts api error: {response.status_code}")

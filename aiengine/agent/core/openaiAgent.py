@@ -63,5 +63,5 @@ class OpenaiApiAgent(BaseAgent):
                 yield parseResult
             yield eventStreamDone()
         except Exception as e:
-            logger.error(f"[OpenaiApiAgent] Exception: {e}", exc_info=True)
+            log.error(f"[OpenaiApiAgent] Exception: {e}", exc_info=True)
             yield eventStreamError(str(e))

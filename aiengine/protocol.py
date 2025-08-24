@@ -231,25 +231,25 @@ class WebSocketHandler():
     async def connect(ws: WebSocket) -> None:
         """连接WebSocket"""
         await ws.accept()
-        # logger.debug(f"WebSocket connected: {ws.client.host}")
+        # log.debug(f"WebSocket connected: {ws.client.host}")
     
     @staticmethod
     async def disconnect(ws: WebSocket):
         """断开WebSocket连接"""
         await ws.close()
-        # logger.debug(f"WebSocket disconnected: {ws.client.host}")
+        # log.debug(f"WebSocket disconnected: {ws.client.host}")
 
     @staticmethod
     async def send_message(ws: WebSocket, action: str, message: str | bytes = b'') -> None:
         """发送WebSocket消息"""
         data = struct_message(action, message)
         await ws.send_bytes(data)
-        # logger.debug(f"Sent action: {action}, payload size: {len(data) - PROTOCOL_HEADER_SIZE} bytes")
+        # log.debug(f"Sent action: {action}, payload size: {len(data) - PROTOCOL_HEADER_SIZE} bytes")
     
     @staticmethod
     async def recv_message(ws: WebSocket) -> Tuple[str, bytes]:
         """接收WebSocket消息"""
         message = await ws.receive_bytes()
         action, payload = parse_message(message)
-        # logger.debug(f"Received action: {action.decode('utf-8').strip()}, payload size: {len(payload)} bytes")
+        # log.debug(f"Received action: {action.decode('utf-8').strip()}, payload size: {len(payload)} bytes")
         return action, payload

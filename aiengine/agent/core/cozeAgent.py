@@ -88,5 +88,5 @@ class CozeApiAgent(BaseAgent):
                                 yield eventStreamText(content)
             yield eventStreamDone()
         except Exception as e:
-            logger.error(f"[DifyApiAgent] Exception: {e}", exc_info=True)
+            log.error(f"[DifyApiAgent] Exception: {e}", exc_info=True)
             yield eventStreamError(str(e))

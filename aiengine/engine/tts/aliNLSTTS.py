@@ -145,5 +145,5 @@ class AliNLSTTS(BaseEngine):
                 desc="Alibaba NLS TTS"
             )
         else:
-            logger.error(f"[{self.cfg.NAME}] TTS synthesis failed to produce audio content.")
+            log.error(f"[{self.cfg.NAME}] TTS synthesis failed to produce audio content.")
             return None

@@ -12,13 +12,13 @@ async def send_message(ws: ClientConnection, action: str, message: str | bytes =
     """发送WebSocket消息"""
     data = struct_message(action, message)
     await ws.send(data)
-    # logger.debug(f"Sent action: {action}, payload size: {len(data) - PROTOCOL_HEADER_SIZE} bytes")
+    # log.debug(f"Sent action: {action}, payload size: {len(data) - PROTOCOL_HEADER_SIZE} bytes")
 
 async def recv_message(ws: ClientConnection) -> Tuple[str, bytes]:
     """接收WebSocket消息"""
     message = await ws.recv()
     action, payload = parse_message(message)
-    # logger.debug(f"Received action: {action.decode('utf-8').strip()}, payload size: {len(payload)} bytes")
+    # log.debug(f"Received action: {action.decode('utf-8').strip()}, payload size: {len(payload)} bytes")
     return action, payload
 
 async def record_microphone(websocket: WebSocket):

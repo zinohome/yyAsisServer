@@ -89,7 +89,7 @@ class DifyApiAgent(BaseAgent):
                         chunkData = pattern.search(chunkStr)
                         # 返回不完整，该模板匹配会失效
                         if not chunkStr.endswith('}') or not chunkData: 
-                            logger.warning(f"[AGENT] Engine return truncated data: {chunkStr}")
+                            log.warning(f"[AGENT] Engine return truncated data: {chunkStr}")
                             continue
                         chunkData = chunkData.group(1)
 
